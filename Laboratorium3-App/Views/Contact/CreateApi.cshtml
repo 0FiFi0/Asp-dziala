@@ -1,0 +1,65 @@
+﻿@model Contact
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h1>Dodawanie kontaktu api</h1>
+<form asp-controller="Contact" asp-action="Create" method="post">
+    <div class="mb-3">
+        <label asp-for="Name">Imię</label>
+        <input class="form-control" asp-for="Name" />
+        <span class="text-danger" asp-validation-for="Name"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Email">Email</label>
+        <input class="form-control" asp-for="Email" />
+        <span class="text-danger" asp-validation-for="Email"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Birth">Birth</label>
+        <input class="form-control" asp-for="Birth" />
+        <span class="text-danger" asp-validation-for="Birth"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Phone">Phone</label>
+        <input class="form-control" asp-for="Phone" />
+        <span class="text-danger" asp-validation-for="Phone"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Priority">Kategoria</label>
+        <div>
+            <span asp-validation-for="Priority" class="text-danger"></span>
+        </div>
+        <select class="form-control" asp-for="Priority" asp-items="@Html.GetEnumSelectList<Priority>()"></select>
+    </div>
+    <div class="mb-3">
+        <label asp-for="OrganizationId">Organizations</label>
+        <label for="filter">Filtr</label>
+        <input class="form-control" type="text" id="filter" />
+        <label asp-for="OrganizationId"></label>
+        <select class="form-control" id="OrganizationId"> </select>
+       
+    </div>
+    <a asp-action="Create" asp-controller="Organizations">Dodaj nową organizacje</a>
+
+</form>
+@section Scripts{
+    <script>
+        const select = document.getElementById("OrganizationId");
+        const filter = document.getElementById("filter");
+        filter.onchange=function(){
+            select.innerHTML="";
+            fetch(`/api/organizations/filter?query=${filter.value}`)
+            .then(response=>response.json())
+            .then(arr=>{
+                for(let org of arr){
+                    let option=document.createElement('option');
+                    option.setAttribute('value',org.id);
+                    option.innerText=org.name;
+                    select.appendChild(option);
+                }
+            });
+        }
+    </script>
+}
